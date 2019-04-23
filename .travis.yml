@@ -4,7 +4,6 @@ jobs:
       language: generic
       before_script:
       - git clone https://github.com/flutter/flutter.git -b stable
-      - export PATH=$PATH:$HOME/.pub-cache/bin
       - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
       - pub global activate coverage
       script: sh scripts/test.sh
