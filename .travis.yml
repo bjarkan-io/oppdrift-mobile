@@ -7,7 +7,11 @@ jobs:
       - export PATH=$HOME/.pub-cache/bin:$PATH
       - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
       - pub global activate coverage
-      script: sh scripts/test.sh
+      script:
+      - flutter packages get
+      - flutter packages pub run build_runner build --delete-conflicting-outputs
+      - flutter test --coverage
+      - genhtml coverage/lcov.info -o coverage --no-function-coverage -s -p `pwd`
       after_success: bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info
 
     - stage: Deployment
