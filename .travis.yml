@@ -4,8 +4,8 @@ jobs:
       language: generic
       before_script:
       - git clone https://github.com/flutter/flutter.git -b stable
-      - flutter packages get
       - export PATH=$HOME/.pub-cache/bin:`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
+      - flutter packages get
       - pub global activate coverage
       script: sh scripts/test.sh
       after_success: bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info
