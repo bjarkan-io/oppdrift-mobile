@@ -2,13 +2,12 @@ jobs:
   include:
     - stage: Testing
       language: generic
-      sudo: true
       before-script:
       - git glone https://github.com/flutter/flutter.git -b stable
       - export PATH="$PATH":"$HOME/.pub-cache/bin"
       - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
       - pub global activate coverage
-      script: ./scripts/test.sh
+      script: sh scripts/test.sh
       after_success: bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info
 
     - stage: Deployment
