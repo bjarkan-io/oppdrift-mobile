@@ -2,6 +2,7 @@ jobs:
   include:
     - stage: Testing
       language: generic
+      sudo: true
       before-script:
       - git glone https://github.com/flutter/flutter.git -b stable
       - export PATH="$PATH":"$HOME/.pub-cache/bin"
