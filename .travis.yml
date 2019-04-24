@@ -1,0 +1,42 @@
+jobs:
+  include:
+  - stage: Testing
+    language: generic
+    before_script:
+    - git clone https://github.com/flutter/flutter.git -b stable
+    - export PATH=$HOME/.pub-cache/bin:`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
+    - flutter packages get
+    - pub global activate coverage
+    script: sh scripts/test.sh
+    after_success: bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info
+  - stage: Deployment
+    language: android
+    jdk: openjdk8
+    android:
+      components:
+      - build-tools-28.0.3
+      - android-28
+    before_script:
+    - openssl aes-256-cbc -K $encrypted_3de17c4a34cb_key -iv $encrypted_3de17c4a34cb_iv
+      -in secrets.tar.enc -out secrets.tar -d
+    - tar xvf secrets.tar
+    - git clone https://github.com/flutter/flutter.git -b stable
+    - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
+    - gem install bundler && cd android && bundle install && cd ..
+    script:
+    - flutter packages get
+    - flutter build apk
+  - stage: Deployment
+    language: generic
+    os: osx
+    osx_image: xcode10.2
+    before_script:
+    - openssl aes-256-cbc -K $encrypted_3de17c4a34cb_key -iv $encrypted_3de17c4a34cb_iv
+      -in secrets.tar.enc -out secrets.tar -d
+    - tar xvf secrets.tar
+    - git clone https://github.com/flutter/flutter.git -b stable
+    - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
+    - cd ios && bundle install && cd ..
+    script:
+    - flutter packages get
+    - flutter build ios --no-codesign
